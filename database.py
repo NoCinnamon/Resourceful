@@ -61,9 +61,9 @@ class AnimalDatabase:
             (*animal, animal_id)
         )
         con.commit()
-        rowId = cur.rowcount
+        rowCount = cur.rowcount
         con.close()
-        return rowId
+        return rowCount
 
     def delete(self, animal_id):
         con = self.connect()

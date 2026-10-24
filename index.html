@@ -24,9 +24,9 @@
     <nav class="nav" aria-label="Main">
       <ul>
         <li><a href="#pets">Pets</a></li>
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#team">Team</a></li>
-        <li><a href="#stories">Testimonials</a></li>
+        <!-- <li><a href="#about">About Us</a></li> -->
+        <!-- <li><a href="#team">Team</a></li>
+        <li><a href="#stories">Testimonials</a></li> -->
         <li><a href="#contact">Contact us</a></li>
       </ul>
     </nav>
@@ -70,11 +70,26 @@
     </div>
   </section>
 
+  <section class="middle" id="pets">
+    <div class="adopt-intro">
+      <p class="adopt-kicker">- ADOPT TODAY -</p>
+      <h2>Every Animal Deserves a Loving Home.</h2>
+      <p class="adopt-lead">Adoption is a lifelong promise of love and care — open your heart and give a homeless pet a forever home.</p>
+    </div>
+
+    <p class="member-subtitle"> See our current members</p>
+
+    <ul id="animal-preview"></ul>
+    <button type="button" class="show-all">View all</button>
+  </section>
+
   <section class="contact" id="contact">
     <h2>Let's Get In Touch.</h2>
     <p class="contact-lead">Whether you're interested in adopting, donating, or simply want to learn more, don't hesitate to reach out!</p>
     <div class="contact-layout">
-      <div class="contact-map">Map</div>
+      <div class="contact-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2718.024436705955!2d-113.55626662478288!3d37.103275272162215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80ca5adf5aaf4c21%3A0xb233a96701fce8ac!2sTarget!5e1!3m2!1sen!2sus!4v1792730542117!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
       <form class="contact-form">
         <input type="text" name="name" placeholder="Enter your full name*" aria-label="Full name" required>
         <input type="tel" name="phone" placeholder="Enter your phone number*" aria-label="Phone number" required>
@@ -86,5 +101,6 @@
   </section>
 
   <main id="top"></main>
+  <script src="scripts.js"></script>
 </body>
 </html>

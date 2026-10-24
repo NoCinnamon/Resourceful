@@ -4,7 +4,7 @@ from database import AnimalDatabase
 
 db = AnimalDatabase()
 
-COLUMNS = ("id", "name", "species", "breed", "gender", "age", "description", "status")
+COLUMNS = ("id", "name", "species", "breed", "gender", "age", "description", "status", "image")
 
 def row_to_obj(row):
     return dict(zip(COLUMNS, row))
@@ -74,6 +74,7 @@ class Request_Handler(BaseHTTPRequestHandler):
             int(data["age"]),
             data["description"],
             data["status"],
+            data["image"],
         )
 
         new_id = db.create(animal)
@@ -110,6 +111,7 @@ class Request_Handler(BaseHTTPRequestHandler):
             int(data["age"]),
             data["description"],
             data["status"],
+            data["image"],
         )
 
         changed = db.replace(animal_id, animal)
@@ -169,3 +171,4 @@ class Request_Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     HTTPServer(("", 8000), Request_Handler).serve_forever()
+    

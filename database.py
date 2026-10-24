@@ -22,9 +22,13 @@ class AnimalDatabase:
             gender TEXT NOT NULL,
             age INTEGER NOT NULL,
             description TEXT,
-            status TEXT NOT NULL
+            status TEXT NOT NULL,
+            image TEXT NOT NULL
             )
         """)
+        columns = [row[1] for row in con.execute("PRAGMA table_info(animals)")]             # PRAGMA schema.table_info(table-name);
+        if "image" not in columns:
+            con.execute("ALTER TABLE animals ADD COLUMN image TEXT")
         con.commit()
         con.close()
 
@@ -47,7 +51,7 @@ class AnimalDatabase:
     def create(self, animal):
         con = self.connect()
         cur = con.cursor()
-        cur.execute("INSERT INTO animals (name, species, breed, gender, age, description, status) VALUES (?, ?, ?, ?, ?, ?, ?)", animal)
+        cur.execute("INSERT INTO animals (name, species, breed, gender, age, description, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", animal)
         con.commit()
         rowId = cur.lastrowid
         con.close()
@@ -57,7 +61,7 @@ class AnimalDatabase:
         con = self.connect()
         cur = con.cursor()
         cur.execute(
-            "UPDATE animals SET name = ?, species = ?, breed = ?, gender = ?, age = ?, description = ?, status = ? WHERE id = ?",
+            "UPDATE animals SET name = ?, species = ?, breed = ?, gender = ?, age = ?, description = ?, status = ?, image = ? WHERE id = ?",
             (*animal, animal_id)
         )
         con.commit()
@@ -96,7 +100,7 @@ if __name__ == "__main__":
             reader = csv.reader(file)
             next(reader)
             data = []
-            for name, species, breed, gender, age, description, status in reader:
+            for name, species, breed, gender, age, description, status, image in reader:
                 data.append(
                     (None, 
                     name, 
@@ -105,16 +109,19 @@ if __name__ == "__main__":
                     gender, 
                     int(age), 
                     description or None, 
-                    status)
+                    status,
+                    image or None)
                 )
         
-            cur.executemany("INSERT INTO animals VALUES(?, ?, ?, ?, ?, ?, ?, ?)", data)
+            cur.executemany("INSERT INTO animals VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
     
     con.commit()
     con.close()
     # db.get(1)
     # db.create(("Smokey", "Dog", "Border Collie", "Male", 2, "cutest forevery", "Available"))
     # db.delete(1)
-    # db.replace(10, ("Finney", "Cat", "Cornish Rex", "Male", 6, "soft baby", "N/A"))
-    db.list_all()
+    db.replace(10, ("Rockey", "Dog", "Border Collie", "Male", 2, "Funny dog", "Available", "dog-Rockey"))
+    for animal in db.list_all():
+        print(animal)
 
+    

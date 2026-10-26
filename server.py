@@ -59,7 +59,7 @@ class Request_Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")                                       
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Content-Length", str(int(body)))
-            self.send_headers()
+            self.end_headers()
             self.wfile.write(body)
             return
         
@@ -71,7 +71,7 @@ class Request_Handler(BaseHTTPRequestHandler):
             data["species"],
             data["breed"],
             data["gender"],
-            int(data["age"]),
+            float(data["age"]),
             data["description"],
             data["status"],
             data["image"],
@@ -108,7 +108,7 @@ class Request_Handler(BaseHTTPRequestHandler):
             data["species"],
             data["breed"],
             data["gender"],
-            int(data["age"]),
+            float(data["age"]),
             data["description"],
             data["status"],
             data["image"],

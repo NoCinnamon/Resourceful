@@ -30,7 +30,7 @@ function addPreview(list, animal) {
   age.appendChild(ageValue);
 
   const gender = document.createElement("span");
-  gender.append("Gender ");
+  // gender.append("Gender ");
   const genderValue = document.createElement("span");
   genderValue.textContent = animal.gender;
   gender.appendChild(genderValue);
@@ -51,3 +51,5 @@ function fillPreviews(animals) {
 fetch(API + "/animals")
   .then((response) => response.json())
   .then(fillPreviews);
+
+

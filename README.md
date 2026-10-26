@@ -35,3 +35,31 @@ The whole function is builing equivlent to: but with non set animal.(the animal 
   </div>
 </li>
 ```
+
+
+## Problem
+
+deleted all my animal...
+
+before:
+```bash
+ remove.addEventListener("click", () => {
+    alert("Delete " + animal.name + "?")
+  });
+  const yes = confirm("Delete " + animal.name + "?");
+  if (yes) {
+    fetch(API + "/animals/" + animal.id, { method: "DELETE" })
+      .then(() => item.remove());
+  }  
+```
+after: 
+```bash
+remove.addEventListener("click", () => {
+  const yes = confirm("Delete " + animal.name + "?");
+  if (yes) {
+    fetch(API + "/animals/" + animal.id, { method: "DELETE" })
+      .then(() => item.remove());
+  }
+});
+
+```

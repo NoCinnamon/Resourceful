@@ -107,7 +107,7 @@ if __name__ == "__main__":
                     species, 
                     breed, 
                     gender, 
-                    int(age), 
+                    float(age), 
                     description or None, 
                     status,
                     image or None)
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # db.get(1)
     # db.create(("Smokey", "Dog", "Border Collie", "Male", 2, "cutest forevery", "Available"))
     # db.delete(1)
-    db.replace(10, ("Rockey", "Dog", "Border Collie", "Male", 2, "Funny dog", "Available", "dog-Rockey"))
+    # db.replace(10, ("Rockey", "Dog", "Border Collie", "Male", 2, "Funny dog", "Available", "images/dog-Rockey"))
     for animal in db.list_all():
         print(animal)
 

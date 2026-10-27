@@ -11,8 +11,44 @@
 </head>
 <body class="animal-page">
   <a class="back-home" href="index.html">Back</a>
-  <h1>All animals</h1>
+  <div class="animal-heading">
+    <h1>All animals</h1>
+    <nav class="all-animal-nav" aria-label="Main">
+      <a class="add-button" href="#Add">Add</a>
+    </nav>
+  </div>
+
   <ul id="animal-list"></ul>
+
+  <form id="animal-form">
+    <section class="addNewData">
+      <div class="header">
+        <h2>Upload Images</h2>
+      </div>
+
+      <div class="input-div">
+        <p>Drag & Drop images here or <span class="browse">Browse</span></p>
+        <input type="file" class="file" multiple accept="image/png, image/jpeg, image/jpg">
+      </div>
+
+      <div id="queued-form">
+        <div class="header">
+          <h3>Queued In Frontend</h3>
+        </div>
+        <div class="queued-form"></div>
+      </div>
+    </section>
+
+    <input name="name" placeholder="Name">
+    <input name="species" placeholder="Species">
+    <input name="breed" placeholder="Breed">
+    <input name="gender" placeholder="Gender">
+    <input name="age" placeholder="Age">
+    <input name="description" placeholder="Description">
+    <input name="status" placeholder="Status">
+    <button type="submit">Add</button>
+  </form>
+
   
   <script src="animals.js"></script>
 </body>

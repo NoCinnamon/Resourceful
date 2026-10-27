@@ -1,5 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from email.parser import BytesParser
+from email.policy import default
 import json
+import os
+import re
 from database import AnimalDatabase
 
 db = AnimalDatabase()
@@ -8,6 +12,35 @@ COLUMNS = ("id", "name", "species", "breed", "gender", "age", "description", "st
 
 def row_to_obj(row):
     return dict(zip(COLUMNS, row))
+
+def save_uploaded_files(content_type, raw):
+    header = ("Content-Type: " + content_type + "\r\n\r\n").encode()
+    message = BytesParser(policy=default).parsebytes(header + raw)
+    folder = os.path.join(os.path.dirname(__file__), "images")
+    os.makedirs(folder, exist_ok=True)
+    saved = []
+    for part in message.iter_parts():
+        filename = part.get_filename()
+        if not filename:
+            continue
+        filename = os.path.basename(filename)
+        filename = re.sub(r"[^A-Za-z0-9._-]", "_", filename)
+        if not filename:
+            continue
+        stem, ext = os.path.splitext(filename)
+        path = os.path.join(folder, filename)
+        number = 1
+        while os.path.exists(path):
+            filename = stem + "-" + str(number) + ext
+            path = os.path.join(folder, filename)
+            number += 1
+        payload = part.get_payload(decode=True)
+        if not payload:
+            continue
+        with open(path, "wb") as image_file:
+            image_file.write(payload)
+        saved.append("images/" + filename)
+    return saved
 
 class Request_Handler(BaseHTTPRequestHandler):
     def do_GET(self):                                               # list/retrive
@@ -53,12 +86,23 @@ class Request_Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
         
     def do_POST(self):                                                     # Create
+        if self.path == "/upload":
+            length = int(self.headers["Content-Length"])
+            raw = self.rfile.read(length)
+            saved = save_uploaded_files(self.headers.get("Content-Type", ""), raw)
+            body = json.dumps({"saved": saved}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         if self.path != "/animals":
             body = json.dumps({"Error 404: not fund"}).encode()
             self.send_response(404)
             self.send_header("Content-Type", "application/json")                                       
             self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Content-Length", str(int(body)))
             self.end_headers()
             self.wfile.write(body)
             return

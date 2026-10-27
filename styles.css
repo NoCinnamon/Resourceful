@@ -408,11 +408,36 @@ body {
   text-decoration: none;
 }
 
+.animal-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
 .animal-page h1 {
-  margin: 0 0 32px;
+  margin: 0;
   font-size: 48px;
   line-height: 1.1;
 }
+
+.add-button {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: rgb(242, 198, 3);
+  color: #1c1c1c;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.add-button:hover {
+  background: #e0b400;
+}
+
 
 #animal-list {
   display: grid;
@@ -516,6 +541,177 @@ body {
   color: #ffffff;
 }
 
+#animal-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 16px;
+  margin: 120px 0 0;
+  padding: 24px;
+  border-radius: 24px;
+  background: #ffffff;
+}
+
+#animal-form input {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: #f3f3f3;
+  color: #2b2b2b;
+  font: inherit;
+  font-weight: 600;
+  padding: 16px 20px;
+}
+
+#animal-form input[name="description"],
+#animal-form input[name="image"] {
+  grid-column: 1 / -1;
+}
+
+#animal-form input::placeholder {
+  color: #b0b0b0;
+  font-weight: 600;
+}
+
+#animal-form button {
+  justify-self: end;
+  grid-column: 1 / -1;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(242, 198, 3);
+  color: #1c1c1c;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 28px;
+  cursor: pointer;
+}
+
+#animal-form button:hover {
+  background: #e0b400;
+}
+
+#animal-form .addNewData {
+  grid-column: 1 / -1;
+  margin-top: 0;
+  padding: 0 0 8px;
+  background: transparent;
+}
+
+.addNewData {
+  margin-top: 120px;
+  padding: 28px;
+  border-radius: 24px;
+  background: #ffffff;
+}
+
+.addNewData .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 18px;
+  padding: 0;
+  background: transparent;
+}
+
+.addNewData h2,
+.addNewData h3 {
+  margin: 0;
+  color: #1c1c1c;
+  line-height: 1.1;
+}
+
+.addNewData h2 {
+  font-size: 28px;
+}
+
+.addNewData h2::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: rgb(242, 198, 3);
+}
+
+.addNewData h3 {
+  font-size: 18px;
+}
+
+.input-div {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  border: 2px dashed #d0d0d0;
+  border-radius: 24px;
+  background: #f7f7f7;
+  color: #8a8a8a;
+  font-weight: 600;
+  text-align: center;
+}
+
+.input-div p {
+  margin: 0;
+  pointer-events: none;
+}
+
+.browse {
+  color: #1c1c1c;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.input-div .file {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+#queued-form {
+  margin-top: 22px;
+  padding-top: 8px;
+}
+
+.queued-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 72px;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f7f7f7;
+}
+
+.queued-form .image {
+  position: relative;
+  width: 96px;
+  height: 96px;
+}
+
+.queued-form .image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.queued-form .image span {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 @media (max-width: 800px) {
   .adopt-intro h2 {
     margin: 72px;
@@ -536,7 +732,8 @@ body {
     font-size: 36px;
   }
 
-  .contact-layout {
+  .contact-layout,
+  #animal-form {
     grid-template-columns: 1fr;
   }
 

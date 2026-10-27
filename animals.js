@@ -35,6 +35,18 @@ function addAnimal(list, animal) {
   edit.className = "edit-button";
   edit.textContent = "Edit";
   edit.href = "#animal-form";
+  edit.addEventListener("click", () => {
+    editingId = animal.id;
+    editingImage = animal.image || "";
+    document.querySelector("#animal-form [name=name]").value = animal.name;
+    document.querySelector("#animal-form [name=species]").value = animal.species;
+    document.querySelector("#animal-form [name=breed]").value = animal.breed;
+    document.querySelector("#animal-form [name=gender]").value = animal.gender;
+    document.querySelector("#animal-form [name=age]").value = animal.age;
+    document.querySelector("#animal-form [name=description]").value = animal.description;
+    document.querySelector("#animal-form [name=status]").value = animal.status;
+  });
+  
 
   const remove = document.createElement("button");
   remove.className = "delete-button";
@@ -62,9 +74,116 @@ function addAnimal(list, animal) {
 
 }
 
-fetch ( API + "/animals")                       // ajax
+fetch(API + "/animals")
   .then((response) => response.json())
   .then((animals) => {
     const list = document.querySelector("#animal-list");
     animals.forEach((animal) => addAnimal(list, animal));
+  }); 
+
+
+  let queuedImagesArray = [],
+  editingId = null,                                     // editingId = null => Adding; when edit is not null => Editing
+  editingImage = "",
+  queuedDiv = document.querySelector(".queued-form"),
+  inputDiv = document.querySelector(".input-div"),
+  input = document.querySelector(".input-div input");
+
+  // QUEUE IN FRONTEND IMAGES
+  input.addEventListener("change", () => {
+    const files = input.files
+    for (let i =0; i < files.length; i++){
+      queuedImagesArray.push(files[i])
+    }
+    input.value = ""
+    displayQueuedImages()
+  })
+
+  inputDiv.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    for(let i=0; i < files.length; i++){
+      if (!files[i].type.match("image")) continue
+      if(queuedImagesArray.every(image => image.name !== files[i].name))
+        queuedImagesArray.push(files[i])
+    }
+    displayQueuedImages()
+  })
+
+
+function displayQueuedImages(){
+  let images = ""
+  queuedImagesArray.forEach((image, index) => {
+    images += `<div class="image">
+                <img src="${URL.createObjectURL(image)}" alt="image">
+                <span onclick="deleteQueuedImage(${index})">&times;</span>
+              </div>`
+  })
+  queuedDiv.innerHTML= images;
+}
+
+function deleteQueuedImage(index){
+  queuedImagesArray.splice(index, 1)
+  displayQueuedImages()
+}
+
+function addNewAnimal(e) {
+  e.preventDefault();
+
+  const sendAnimal = (imagePath) => {
+    const animal = {
+      name: document.querySelector("#animal-form [name=name]").value,
+      species: document.querySelector("#animal-form [name=species]").value,
+      breed: document.querySelector("#animal-form [name=breed]").value,
+      gender: document.querySelector("#animal-form [name=gender]").value,
+      age: document.querySelector("#animal-form [name=age]").value,
+      description: document.querySelector("#animal-form [name=description]").value,
+      status: document.querySelector("#animal-form [name=status]").value,
+      image: imagePath,
+    };
+
+    const url = editingId ? API + "/animals/" + editingId : API + "/animals";
+    const method = editingId ? "PUT" : "POST";
+
+    fetch(url, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(animal),
+    })
+      .then((response) => response.json())
+      .then(() => {
+      editingId = null;
+      editingImage = "";
+      queuedImagesArray = [];
+      displayQueuedImages();
+      document.querySelector("#animal-form").reset();
+      return fetch(API + "/animals");
+    })
+    .then((response) => response.json())
+    .then((animals) => {
+      const list = document.querySelector("#animal-list");
+      list.replaceChildren();
+      animals.forEach((animal) => addAnimal(list, animal));
+    });
+  };
+
+  if (queuedImagesArray.length === 0) {
+    sendAnimal(editingImage);
+    return;
+  }
+
+  const formData = new FormData();
+  queuedImagesArray.forEach((image, index) => {
+    formData.append("file[" + index + "]", image);
   });
+
+  fetch(API + "/upload", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      sendAnimal((data.saved || [])[0] || "");
+    });
+}
+document.querySelector("#animal-form").addEventListener("submit", addNewAnimal);

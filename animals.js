@@ -26,9 +26,6 @@ function addAnimal(list, animal) {
   if (animal.status === "Available") {
     status.classList.add("is-available");
   }
-  if (animal.status === "Adopted") {
-    status.classList.add("is-adopted");
-  }
   status.textContent = animal.status;
 
   const edit = document.createElement("a")

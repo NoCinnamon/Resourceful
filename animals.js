@@ -184,3 +184,10 @@ function addNewAnimal(e) {
     });
 }
 document.querySelector("#animal-form").addEventListener("submit", addNewAnimal);
+document.querySelector(".add-button").addEventListener("click", () => {
+  editingId = null;
+  editingImage = "";
+  queuedImagesArray = [];
+  displayQueuedImages();
+  document.querySelector("#animal-form").reset();
+});

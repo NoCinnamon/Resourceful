@@ -2,7 +2,6 @@ import sqlite3
 import csv
 
 
-
 class AnimalDatabase:
     def __init__(self, db="data/animals.db"):
         self.db = db

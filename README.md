@@ -1,65 +1,91 @@
-## ajax
+## README for assignment Resourceful:
 
-### preview animal:
-
-web use scripts.js request first 3 animals from server.py, server.py go to database.py to get the data from SQLite, change it to JSON then send back to web。 then scripts.js writes name, age and gender on website.
-
-* scripts.js：浏览器里的 JavaScript，负责要数据和填页面。
-* server.py：收到请求，再把结果变成 JSON 送回去。
-* database.py：用 SQL 向 SQLite 要行。
-* data/animals.db：SQLite 数据库文件，动物记录存在这里。
-
-## function addPreview in scripts.js:
-
-in page，is having 3 available animals preview, click their image will pop a card with its information. and the button lead to atoption form. If the animal in preview got adopted, it will put another availiable animal there.
-
-`scripts.js` loads the page and requests `GET /animals`. `fillPreviews` keeps animals whose `status` is `Available`, then takes the first 3. Each of those is passed to `addPreview`.
-
-`addPreview` builds one card and appends it to `<ul id="animal-preview">`. The card shows the animal's photo, name, age, and gender. The photo links to `animal.html?id=<id>`. If `image` is empty, the card is still added, without a photo. this shoulnt happen, because  in `database.py`, i set it to NOT NULL. 
-
-When an animal's status is no longer `Available`, the next request leaves it out. it will find next available one.
-
-The whole function is builing equivlent to: but with non set animal.(the animal will change based on it's availablity)
-
-```bash
-<li>
-  <a href="animal.html?id=2">
-    <img src="images/dog-Luna.jpg" alt="Luna">
-  </a>
-  <div class="preview-card">
-    <h3 class="preview-name">Luna</h3>
-    <p class="preview-meta">
-      <span>Age <span>4</span></span>
-      <span>Gender <span>Female</span></span>
-    </p>
-  </div>
-</li>
-```
-
-
-## Problem
-
-deleted all my animal...
-
-before:
-```bash
- remove.addEventListener("click", () => {
-    alert("Delete " + animal.name + "?")
-  });
-  const yes = confirm("Delete " + animal.name + "?");
-  if (yes) {
-    fetch(API + "/animals/" + animal.id, { method: "DELETE" })
-      .then(() => item.remove());
-  }  
-```
-after: 
-```bash
-remove.addEventListener("click", () => {
-  const yes = confirm("Delete " + animal.name + "?");
-  if (yes) {
-    fetch(API + "/animals/" + animal.id, { method: "DELETE" })
-      .then(() => item.remove());
-  }
-});
+* Resource name: animal 
+* Attributes:
 
 ```
+  id                Unique identifier 
+  name              The animal's name 
+  species           Species, like dog/cat/rabbit/... 
+  breed             Breed 
+  gender            Gender 
+  age               Age in years  (float; if age < 1year, it will be a float) 
+  description       A short description 
+  status            Availability, such as Available or Adopted 
+  image             Path to the animal's photo 
+```
+
+## Database
+
+```sql
+CREATE TABLE IF NOT EXISTS animals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    species TEXT NOT NULL,
+    breed TEXT NOT NULL,
+    gender TEXT NOT NULL,
+    age INTEGER NOT NULL,
+    description TEXT,                      
+    status TEXT NOT NULL,
+    image TEXT NOT NULL
+);
+```
+
+* everything other than description is required to have
+
+## REST
+
+```
+* Name:               Method                  Path for all:           in server.py:
+  List                GET                     /animals                do_GET
+  Retrieve            GET                     ..                      do_GET
+  Create              POST                    ..                      do_POST
+  Replace             PUT                     ..                      do_PUT
+  Delete              DELETE                  ..                      do_DELETE
+
+```
+
+## Description
+
+* path: /animals
+
+  path +  GET: list all animals  
+  path +  POST: Add a new animal
+* If a animal's id = 3:  
+
+  path/3  + GET: list the animal whos id = 3  
+  + PUT: edit the animal whos id = 3  
+  + DLETE: delete the animal whos id = 3
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+well i need to admit that in server.py i let AI wrote the def save_uploaded_files(content_type, raw). 
+
+### List：GET /animals
+
+`do_GET` sees the path is /animals, it then call `db.list_all()` , change each line into JSON then send back with status code 200.   
+The 3 preview animal in index.html and the all animal cards listed in animals.html use this.
+
+
+Retrieve 1 animal with its id：GET /animals/<id>
+if i want to extract animal id=3: GET /animals/3
+
+path will atach the id number -> /animals/3.The server uses db.get(3) to get the row. If find, response in JSON of this animal with status code 200. if not found in database, reply with {"error": "Not found"}，and status code 404。
+
+### Create：POST /animals
+
+In animals.html, there is a form for Edit and Add a animal to database. 
+this form starts empty, when editingId === null, Submit adds a new animal (POST). 
+                        when editingId !== null, Submit is editing that animal (PUT).
+
+the request body is a animal in JSON: name、species、breed、gender、age、description、status、image, server call db.create function to add that animal, then response with taht information with status code 201, means successful create taht animal.
+
+### Edit Replace：PUT /animals/id
+
+in `animal.html` page, each animal card has edit/delete button, click the edit button for taht animal, all its value will appear in the form. `editingId` is taht animal's id. 
+change the filed as wish then click submit, the path becoms /animals/ followed by that id. 
+request body for edit still are every field. server replaces the whole existing row with these new values by calling db.replace(...). if succeeds, it will return the updated animal with status code 200; or if the id not exsit, it will return the code 404. (but this shouldn't happen)
+
+### Delete：DELETE /animals/id
+
+still in`animal.html` page, on each animal card, if wish to delete a animal, click delete.
+then it will call comfirm(), ask "Delete + NAME?" first. After user comfirm, send delete request, with empty request body. The server calls db.delete(...)。if successful deleted, replay with 200, otherwise, if id not exsit, or path not right, returns code 404.
